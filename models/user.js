@@ -1,3 +1,6 @@
+const mongoose = require("mongoose")
+
+const Schema = mongoose.Schema;
 
 
 const userSchema = new Schema({
@@ -32,21 +35,39 @@ const userSchema = new Schema({
         type: String
     },
 
-    ing: {
+    lng: {
         type: Number
     },
 
     cart: [
         {
-            food: {type:Schema.Type.ObjectUd, ref: "Food", required: true},
-            qty : {type: Number, required: true}
+            food: {
+                type:Schema.Types.ObjectId,
+                 ref: "Food",
+                  required: true
+                },
+
+            qty : {
+                type: Number,
+                 required: true
+                }
         }
     ],
 
     order: [
         {
-          type: Schema.Type.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: "Order"
         }
     ]
-})
+});
+
+userSchema.methods.addToCart = function(foodItem) {
+    const foodIndex = this.cart.foodIndex((cf)=>{
+        return cf.food._d.toString() === foodItem._id.toString();
+    })
+
+    
+}
+
+module.exports = mongoose.model("User", userSchema)
